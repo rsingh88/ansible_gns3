@@ -1,0 +1,12 @@
+[all]
+csr1 ansible_host=1.1.1.1
+csr2 ansible_host=2.2.2.2
+r1 ansible_host=3.3.3.3
+r2 ansible_host=4.4.4.4
+
+[all:vars]
+ansible_connection=network_cli
+ansible_network_os=ios
+ansible_user=cisco
+ansible_password=cisco
+ansible_python_interpreter=/usr/bin/python3

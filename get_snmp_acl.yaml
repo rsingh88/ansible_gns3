@@ -1,0 +1,32 @@
+- name: "Play 1 - Create directory"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: "Create directory to store output files"
+      file:
+        path: ./output
+        state: directory
+
+- name: "Play 2 - gather snmp acl state for devices"
+  hosts: datacenter
+  gather_facts: false
+  tasks:
+    - name: "Grab snmp config"
+      ios_command:
+        commands:
+          - show run | in snmp
+
+      register: output
+
+    - name: "create output file"
+      copy:
+        content: "{{ output }}"
+        dest: ./output/{{ inventory_hostname }}.json
+
+- name: "Play 3 - Run python code to scan for snmp acl"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: "get final json"
+      script:
+        read_snmp_file.py
