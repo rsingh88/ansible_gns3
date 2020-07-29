@@ -8,20 +8,46 @@
         state: directory
 
 - name: "Play 2 - gather snmp acl state for devices"
-  hosts: datacenter
+  hosts: single
   gather_facts: false
   tasks:
-    - name: "Grab snmp config"
-      ios_command:
-        commands:
-          - show run | in snmp
-
+    # - name: "Grab snmp config"
+    #   ios_command:
+    #     commands:
+    #       - sh conf | in flow
+    - name: Gather interfaces resource and minimal legacy facts
+      ios_facts:
+        # gather_subset: min
+        gather_network_resources: interfaces
       register: output
 
+    # - name: "create output file"
+    #   copy:
+    #     content: "{{ output }}"
+    #     dest: "./output/{{ inventory_hostname }}.json"
+
     - name: "create output file"
-      copy:
-        content: "{{ output }}"
-        dest: ./output/{{ inventory_hostname }}.json
+      debug:
+        msg: "{{ output }}"
+
+
+# - name: "Play 2 - Gather snmp for Nexus"
+#   hosts: all
+#   gather_facts: false
+#   tasks:
+#     - name: "Grab snmp"
+#       nxos_command:
+#         commands:
+#           - command: sh run | in snmp-server community
+#             output: json
+
+#       register: result
+
+#     - name: "create output file"
+#       copy:
+#         content: "{{ result }}"
+#         dest: "./output/{{ inventory_hostname }}.json"
+
 
 - name: "Play 3 - Run python code to scan for snmp acl"
   hosts: localhost

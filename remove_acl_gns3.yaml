@@ -1,0 +1,36 @@
+- name: "Play 1 - Create directory"
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: "Create directory to store output files"
+      file:
+        path: ./snmp_write
+        state: directory
+
+- name: "Play 2 - configure snmp and acl"
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: "configure snmp community"
+      ios_config:
+        lines:
+          - no snmp-server
+
+    - name: "configure acls"
+      ios_config:
+        lines:
+          - no ip access-list standard 9
+
+
+    - name: "save running to startup when modified"
+      ios_config:
+        save_when: modified
+
+
+    # - name: "create output file"
+    #   copy:
+    #     content: "{{ output }}"
+    #     dest: "./snmp_write/{{ inventory_hostname }}.json"
+
+
+
